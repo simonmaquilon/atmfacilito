@@ -15,3 +15,4 @@ def register_customer(nombre, apellido, identificacion, correo):
     """
     print("Create Account")
     return "simon"
+
