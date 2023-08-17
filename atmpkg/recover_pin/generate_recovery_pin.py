@@ -34,8 +34,8 @@ class RecoveryPin(Pin):
             recovery_pins = executor.map(lambda _: self.generate_recovery_pin(), range(num_pins))
         return list(recovery_pins)
 
-# # Create a RecoveryPin object with a pin length of 6 and a recovery length of 8
-# recovery_pin = RecoveryPin(6, 8)
+# # Create a RecoveryPin object with a pin length of 4 and a recovery length of 4
+# recovery_pin = RecoveryPin(4, 4)
 
 # # Generate a recovery pin
 # generated_recovery_pin = recovery_pin.generate_recovery_pin()

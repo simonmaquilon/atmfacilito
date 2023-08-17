@@ -49,7 +49,7 @@ def concurrent_operations(accounts):
     pass
 
 if __name__ == "__main__":
-    account1 = SavingsAccount(12345, 1000, "John")
+    account1 = SavingsAccount(12345, 1000, "Vicente")
     account2 = CheckingAccount(67890, 2000, "Jane")
 
     accounts = [account1, account2]
