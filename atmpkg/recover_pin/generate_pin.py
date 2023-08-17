@@ -27,8 +27,8 @@ class Pin:
         return pin.isdigit() and len(pin) == self.pin_length
     
     
-### Test, how create a Pin object with a pin length of X and show generated pin by console
-# pin = Pin(10)
+# ## Test, how create a Pin object with a pin length of X and show generated pin by console
+# pin = Pin(4)
 
 # # Generate a pin
 # generated_pin = pin.generate_pin()
