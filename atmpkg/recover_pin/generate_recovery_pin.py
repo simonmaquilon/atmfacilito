@@ -15,7 +15,8 @@ class RecoveryPin(Pin):
 #Implement the RecoveryPin class
 
 from concurrent.futures import ThreadPoolExecutor
-from generate_pin import Pin
+# from generate_pin import Pin
+# import generate_pin
 
 class RecoveryPin(Pin):
     def __init__(self, pin_length, recovery_length):

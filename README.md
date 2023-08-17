@@ -26,3 +26,6 @@ Puedes cambiar el código PIN que la entidad bancaria te haya proporcionado para
 ### ✅ Transferir dinero
 
 Te permite realizar ingresos en tu propia cuenta o en la de otra persona o empresa con tu número de identificación, indicando el importe e introduciendo el monto y PIN de acceso.
+
+### ✅ Panel - Mis Cuentas
+Permite consultar tu información de cuenta en tiempo real.
