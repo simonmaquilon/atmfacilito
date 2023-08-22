@@ -118,7 +118,6 @@ def homepage():
         return public_timeline()
 
 
-# Aquí va la implementación de Threads
 @app.route("/makewithdraw/<transaction_id>/")
 def make_withdraw(transaction_id):  # , single, multi):
     transaction = (
@@ -133,6 +132,70 @@ def make_withdraw(transaction_id):  # , single, multi):
     print(queue)
 
     return render_template("atm.html")
+
+ # Aquí va la implementación de Threads
+# ####### import multiprocessing # ####### 
+
+# @app.route("/makewithdraw/<transaction_id>/")
+# def make_withdraw(transaction_id):
+#     transaction = (
+#         Transaction.select()
+#         .where(Transaction.id == transaction_id)
+#         .order_by(Transaction.customer)
+#     )
+#     from_account = transaction.get().from_account
+
+#     queue = multiprocessing.Queue()
+
+#     def process_transaction(transaction_id):
+#         queue.put(transaction_id)
+
+#     processes = []
+#     for i in range(5):
+#         process = multiprocessing.Process(target=process_transaction, args=(transaction_id,))
+#         processes.append(process)
+#         process.start()
+
+#     for process in processes:
+#         process.join()
+
+#     while not queue.empty():
+#         transaction_id = queue.get()
+#         print(transaction_id)
+
+#     return render_template("atm.html")
+ ### ===========import threading # ####### =================================
+#  import threading
+
+# @app.route("/makewithdraw/<transaction_id>/")
+# def make_withdraw(transaction_id):
+#     transaction = (
+#         Transaction.select()
+#         .where(Transaction.id == transaction_id)
+#         .order_by(Transaction.customer)
+#     )
+#     from_account = transaction.get().from_account
+
+#     queue = []
+
+#     def thread_transaction(transaction_id):
+#         queue.append(transaction_id)
+
+#     threads = []
+#     for i in range(5):
+#         thread = threading.Thread(target=thread_transaction, args=(transaction_id,))
+#         threads.append(thread)
+#         thread.start()
+
+#     for thread in threads:
+#         thread.join()
+
+#     for transaction_id in queue:
+#         print(transaction_id)
+
+#     return render_template("atm.html")
+
+###====== ===========End threading # ####### =================================
 
 
 @app.route("/account/")
