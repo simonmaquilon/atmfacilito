@@ -1,0 +1,267 @@
+{% extends "layout.html" %} {% block body %}
+<head>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='atm.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col display">
+        <div class="cal-logo text-center">ATM Facilito</div>
+        <div class="massege">
+          <p id="msg2"></p>
+          <p class="mt-4" id="msg">Ingrese su # de cuenta</p>
+        </div>
+        <div class="menu" id="menu">
+          <input type="button" value="Retiro" onclick="withdraw()" />
+          <input type="button" style="padding-right: 70px" value="Depósito" onclick="credit()" />
+          <input type="button" value="Saldo" onclick="minist()" />
+          <input type="button" value="Salir" onclick="exit()" />
+        </div>
+        <div id="mini-st">
+          <p id="msg3">
+            <span id="Ac-holder"> <b>Usuario:&nbsp;&nbsp;</b>prem prakash gupta</span>
+            <br />
+            <span id="main-balance">5000</span> <br />
+          </p>
+        </div>
+        <input
+          type="button"
+          value="Atrás"
+          style="padding-left: 10px"
+          onclick="menuback()"
+          id="menuback"
+        />
+      </div>
+      <div class="col calculator">
+        <form class="cal-body" name="forms" id="forms">
+          <input type="text" class="cal-display" name="answer" id="textview" disabled />
+          <div class="cal-button">
+            <input
+              type="button"
+              value="1"
+              onclick="forms.answer.value += '1'"
+              id="btn1"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="2"
+              onclick="forms.answer.value += '2'"
+              id="btn2"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="3"
+              onclick="forms.answer.value += '3'"
+              id="btn3"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="4"
+              onclick="forms.answer.value += '4'"
+              id="btn4"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="5"
+              onclick="forms.answer.value += '5'"
+              id="btn5"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="6"
+              onclick="forms.answer.value += '6'"
+              id="btn6"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="7"
+              onclick="forms.answer.value += '7'"
+              id="btn7"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="8"
+              onclick="forms.answer.value += '8'"
+              id="btn8"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="9"
+              onclick="forms.answer.value += '9'"
+              id="btn9"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="0"
+              onclick="forms.answer.value += '0'"
+              id="btn0"
+              class="btn"
+            />
+            <input
+              type="button"
+              value="."
+              onclick="forms.answer.value += '.'"
+              id="btn."
+              class="btn"
+            />
+
+            <input
+              value="<"
+              onclick="forms.answer.value=delete(forms.answer.value)"
+              id="btnreset"
+              type="reset"
+              class="btn reset"
+            />
+            <input
+              type="button"
+              value="OK"
+              onclick="cardcheck()"
+              id="btnproced"
+              class="btn equal"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    var toammount = 5000;
+    var tammount = parseInt(toammount);
+
+    function back() {
+      var exp = document.getElementById('forms').textview.value;
+      exp = exp.substring(0, exp.length - 1);
+      document.getElementById('forms').textview.value = exp;
+    }
+
+    function cardcheck() {
+      document.getElementById('msg').innerHTML = 'Processing...';
+      var textv = document.getElementById('textview').value;
+      if (textv == '') {
+        document.getElementById('msg').innerHTML = 'Card is no entered';
+      } else {
+        if (textv == 1111) {
+          document.getElementById('msg2').innerHTML = '# de cuenta correcto';
+          document.getElementById('msg').innerHTML = 'Enter your PIN';
+          document.getElementById('textview').value = '';
+          document.getElementById('btnproced').setAttribute('onclick', 'passcheck()');
+        } else {
+          document.getElementById('msg').innerHTML = '# de cuenta incorrecto';
+          document.getElementById('msg').style.color = 'red';
+        }
+      }
+    }
+
+    function passcheck() {
+      var textv = document.getElementById('textview').value;
+      if (textv == '') {
+        document.getElementById('msg').innerHTML = 'PIN no ingresado';
+      } else {
+        if (textv == 1234) {
+          document.getElementById('msg2').innerHTML = 'PIN correcto';
+          document.getElementById('msg').innerHTML = 'Seleccione';
+          document.getElementById('textview').value = '';
+          document.getElementById('menu').style.display = 'block';
+          document.getElementById('textview').style.display = 'none';
+          document.getElementById('btnproced').setAttribute('onclick', '');
+        } else {
+          document.getElementById('msg2').innerHTML = '';
+          document.getElementById('msg').innerHTML = 'PIN incorrecto';
+          document.getElementById('msg').style.color = 'red';
+        }
+      }
+    }
+
+    function withdraw() {
+      document.getElementById('textview').value = '';
+      document.getElementById('msg2').innerHTML = '';
+      document.getElementById('msg').innerHTML = 'Ingrese el monto';
+      document.getElementById('menu').style.display = 'none';
+      document.getElementById('menuback').style.display = 'block';
+      document.getElementById('btnproced').setAttribute('onclick', 'calculation1()');
+      document.getElementById('textview').style.display = 'block';
+    }
+
+    function calculation1() {
+      var textview = document.getElementById('textview').value;
+      var textv = parseInt(textview);
+      if (textv == '' || textv == 0) {
+        document.getElementById('msg2').innerHTML = 'ammount is not entered';
+        document.getElementById('msg').innerHTML = '';
+      } else {
+        if (tammount > 1 && textv <= tammount) {
+          tammount = tammount - textv;
+          document.getElementById('msg2').innerHTML = 'your balance';
+          document.getElementById('msg').innerHTML = tammount;
+          document.getElementById('textview').value = '';
+        } else {
+          document.getElementById('msg').innerHTML = 'insufficient balance!!!!!!!!';
+        }
+      }
+    }
+
+    function credit() {
+      document.getElementById('textview').value = '';
+      document.getElementById('msg2').innerHTML = '';
+      document.getElementById('msg').innerHTML = 'Ingrese el monto';
+      document.getElementById('menu').style.display = 'none';
+      document.getElementById('menuback').style.display = 'block';
+      document.getElementById('msg2').innerHTML = '';
+      document.getElementById('btnproced').setAttribute('onclick', 'calculation2()');
+      document.getElementById('textview').style.display = 'block';
+    }
+
+    function calculation2() {
+      var textv = document.getElementById('textview').value;
+      if (textv == '' || textv == 0) {
+        document.getElementById('msg2').innerHTML = 'monto incorrecto';
+        document.getElementById('msg').innerHTML = '';
+      } else {
+        tammount = tammount + parseFloat(textv);
+        document.getElementById('msg2').innerHTML = 'su saldo';
+        document.getElementById('msg').innerHTML = tammount;
+        document.getElementById('textview').value = '';
+      }
+    }
+
+    function menuback() {
+      document.getElementById('menu').style.display = 'block';
+      document.getElementById('menuback').style.display = 'none';
+      document.getElementById('btnproced').setAttribute('onclick', '');
+      document.getElementById('mini-st').style.display = 'none';
+      document.getElementById('msg').innerHTML = 'Seleccione';
+      document.getElementById('msg2').innerHTML = '';
+      document.getElementById('textview').style.display = 'none';
+    }
+
+    function minist() {
+      document.getElementById('textview').value = '';
+      document.getElementById('mini-st').style.display = 'block';
+      document.getElementById('textview').style.display = 'none';
+      document.getElementById('msg').innerHTML = 'Saldo';
+      document.getElementById('msg2').innerHTML = '';
+      document.getElementById('main-balance').innerHTML = tammount;
+      document.getElementById('menuback').style.display = 'block';
+      document.getElementById('menu').style.display = 'none';
+    }
+
+    function exit() {
+      document.getElementById('msg').innerHTML = 'Ingrese su # de cuenta';
+      document.getElementById('btnproced').setAttribute('onclick', 'cardcheck()');
+      document.getElementById('msg2').innerHTML = '';
+      document.getElementById('menu').style.display = 'none';
+      document.getElementById('textview').value = '';
+      document.getElementById('textview').style.display = 'block';
+    }
+  </script>
+  {% endblock %}
+</body>

@@ -1,0 +1,139 @@
+input {
+  cursor: pointer;
+  background: white !important;
+}
+.container {
+  margin-top: 65px;
+  background-color: #292929;
+}
+.row {
+  width: 400px;
+  height: 600px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.col {
+  height: 300px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+.display {
+  box-shadow: 0 0 0 35px #353535, 0 0 0 45px #3e3e3e, inset 0 0 10px rgba(0, 0, 0, 1),
+    0 5px 20px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+.calculator {
+  width: 80%;
+  display: block;
+  margin: auto;
+}
+.cal-logo {
+  font-size: 30px;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  margin: 10px;
+}
+#textview {
+  width: 150px;
+  height: 30px;
+  display: block;
+  margin: auto;
+  position: absolute;
+  text-align: center;
+  top: -82px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  background: transparent;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 2px solid black;
+  color: black;
+}
+.btn {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+}
+.equal {
+  width: 70px;
+}
+.massege {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.massege p {
+  font-size: 22px;
+  color: black;
+  text-shadow: 1px 1px 1px black;
+  margin: 10px;
+}
+#msg2 {
+  color: green;
+}
+#msg {
+  color: lightgray;
+}
+.menu {
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  display: none;
+}
+.menu input {
+  width: 70px;
+  height: 30px;
+  padding: 3px;
+  margin: 5px;
+
+  text-align: center;
+  border: 1px solid #050801;
+  background-color: transparent;
+  color: black;
+}
+.menu input:hover {
+  background-color: #03e9f4;
+  color: #050801;
+  box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4, 0 0 200px #03e9f4;
+  outline: none;
+  border: none;
+}
+#menuback {
+  width: 70px;
+  height: 30px;
+  padding: 3px;
+  margin: 5px;
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  text-align: center;
+  border: 1px solid #050801;
+  background-color: crimson;
+  color: black;
+  border-bottom-left-radius: 30px;
+  display: none;
+}
+#menuback:hover {
+  font-weight: 400;
+  color: #050801;
+  box-shadow: 0 0 5px crimson, 0 0 25px crimson, 0 0 50px crimson, 0 0 200px crimson;
+  outline: none;
+  border: none;
+}
+#mini-st {
+  background-color: white;
+  display: none;
+}
+#msg3 {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  color: white;
+  transform: translateX(-50%);
+}
