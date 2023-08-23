@@ -23,9 +23,5 @@ La consulta de saldos se puede realizar desde la pantalla.
 Cambiar el código PIN de tu tarjeta
 Puedes cambiar el código PIN que la entidad bancaria te haya proporcionado para tu tarjeta bancaria. Para ello, debe introducir su número de identificación, teclear el PIN actual e ir a la opción de cambio de PIN..
 
-### ✅ Transferir dinero
-
-Te permite realizar ingresos en tu propia cuenta o en la de otra persona o empresa con tu número de identificación, indicando el importe e introduciendo el monto y PIN de acceso.
-
 ### ✅ Panel - Mis Cuentas
 Permite consultar tu información de cuenta en tiempo real.
