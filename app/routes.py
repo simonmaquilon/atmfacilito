@@ -153,12 +153,12 @@ def transactions():
     try:
         transactions = user.transactions
         return object_list("transactions.html", transactions, "transactions")
-    except:
+    except Exception as err:
+        print(err)
         return redirect(url_for("homepage"))
 
-    # ready
 
-
+# ready
 @app.route("/atm", methods=["GET", "POST"])
 @login_required
 def atm():
@@ -185,12 +185,12 @@ def withdraw():
     return render_template("create.html", account=user.account.first().accnum)
 
 
-@app.route("/atm-credit/", methods=["GET", "POST"])
+@app.route("/atm-transact/", methods=["GET", "POST"])
 def atm_transaction():
     user = get_current_user()
     if request.method == "POST":
         data = request.get_json()
-        Transaction.create(
+        transaction = Transaction.create(
             customer=user,
             to_accnum=user.account.get().accnum,
             ttype="DEPOSITO",
@@ -200,10 +200,10 @@ def atm_transaction():
             completed=True,
             created_at=datetime.datetime.now(),
         )
-        Account.update(
-            customer_id=user.id,
-            balance=float(data["amount"]),
+        query = Account.update(balance=transaction.c_balance).where(
+            Account.customer_id == user.id
         )
+        query.execute()
 
     results = {"completed": 1}
 

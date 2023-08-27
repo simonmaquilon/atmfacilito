@@ -3,16 +3,13 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='atm.css') }}">
 </head>
 <body>
-  <div class="alert alert-info" role="alert">
-    <strong>Bienvenido</strong>: <span class="text-uppercase">{{current_user.username}}</span>
-  </div>
   <div class="container">
     <div class="row">
       <div class="col display">
         <div class="cal-logo text-center">ATM Facilito</div>
         <div class="massege">
           <p id="msg2"></p>
-          <p class="mt-4" id="msg">Ingrese su # de PIN</p>
+          <p class="mt-4" id="msg">Ingrese su PIN</p>
         </div>
         <div class="menu" id="menu">
           <input type="button" value="Retiro" onclick="withdraw()" />
@@ -20,11 +17,13 @@
           <input type="button" value="Saldo" onclick="balance()" />
           <input type="button" value="Salir" onclick="exit()" />
         </div>
-        <div id="mini-st">
+        <div id="balanceview" class="h4">
           <p id="msg3">
-            <span id="Ac-holder"> <b>Usuario:&nbsp;&nbsp;</b> {{current_user.username}}</span>
+            <span id="Ac-holder" class="text-uppercase h6">
+              <b>Usuario:&nbsp;&nbsp;</b> {{current_user.username}}</span
+            >
             <br />
-            <span id="main-balance">{{current_user.account.balance}}</span> <br />
+            <span id="main-balance" class="h4">{{current_user.account.balance}}</span> <br />
           </p>
         </div>
         <input
@@ -137,7 +136,6 @@
     </div>
   </div>
   <script>
-    let userAccount = '{{current_user.account.get().accnum}}';
     let accountPin = '{{current_user.account.get().pin}}';
     let accountBalance = '{{current_user.account.get().balance}}';
 
@@ -158,7 +156,7 @@
       } else {
         if (textv == accountPin) {
           document.getElementById('msg2').innerHTML = 'PIN correcto';
-          document.getElementById('msg').innerHTML = 'Seleccione';
+          document.getElementById('msg').innerHTML = '';
           document.getElementById('textview').value = '';
           document.getElementById('menu').style.display = 'block';
           document.getElementById('textview').style.display = 'none';
@@ -194,7 +192,7 @@
           document.getElementById('msg').innerHTML = tammount;
           document.getElementById('textview').value = '';
         } else {
-          document.getElementById('msg').innerHTML = 'Fondos insuficientes!!!!!!!!';
+          document.getElementById('msg').innerHTML = 'Fondos insuficientes!!!';
           document.getElementById('msg').style.color = 'red';
         }
       }
@@ -228,14 +226,10 @@
           success: function (result) {
             if (result.completed) {
               tammount = tammount + parseFloat(textv);
-              document.getElementById('msg2').innerHTML = 'su saldo';
+              document.getElementById('msg2').innerHTML = 'Saldo';
               document.getElementById('msg').innerHTML = tammount;
               document.getElementById('textview').value = '';
-
-              Swal.fire({
-                icon: 'success',
-                title: 'Su transaccción se ha completado',
-              });
+              document.getElementById('textview').style.display = 'none';
             }
           },
         });
@@ -246,7 +240,7 @@
       document.getElementById('menu').style.display = 'block';
       document.getElementById('menuback').style.display = 'none';
       document.getElementById('btnproced').setAttribute('onclick', '');
-      document.getElementById('mini-st').style.display = 'none';
+      document.getElementById('balanceview').style.display = 'none';
       document.getElementById('msg').innerHTML = 'Seleccione';
       document.getElementById('msg2').innerHTML = '';
       document.getElementById('msg').style.color = 'white';
@@ -255,9 +249,9 @@
 
     function balance() {
       document.getElementById('textview').value = '';
-      document.getElementById('mini-st').style.display = 'block';
+      document.getElementById('balanceview').style.display = 'block';
       document.getElementById('textview').style.display = 'none';
-      document.getElementById('msg').innerHTML = 'Saldo';
+      document.getElementById('msg').innerHTML = 'Saldo:';
       document.getElementById('msg2').innerHTML = '';
       document.getElementById('main-balance').innerHTML = tammount;
       document.getElementById('menuback').style.display = 'block';
