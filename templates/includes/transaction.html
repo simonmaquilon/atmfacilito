@@ -1,0 +1,23 @@
+{#<a class="avatar" href="{{ url_for('user_detail', username=transaction.user.username) }}"
+  ><img src="{{ transaction.user.gravatar_url() }}" /></a
+>#}
+<hr />
+<ul class="list-group mt-2">
+  <li class="list-group-item bg-success text-white">
+    Cliente: {{ transaction.customer.username }}
+  </li>
+  <li class="list-group-item">
+    Transacción: &nbsp;&nbsp;<img
+      src="{{ qrcode(url_for('make_withdraw', transaction_id=transaction.id, _external=True)) }}"
+      width="90"
+    />
+  </li>
+  <li class="list-group-item">
+    Estado: <span class="badge {{"bg-success" if transaction.completed else "bg-danger"}}">{{"Completada" if transaction.completed else "Pendiente"}}</span>
+  </li>
+  <li class="list-group-item">Tipo de Transacción: {{ transaction.ttype }}</li>
+  <li class="list-group-item">Monto: ${{ transaction.amount }}</li>
+  <li class="list-group-item">Cuenta: ${{ transaction.to_accnum }}</li>
+  <li class="list-group-item">Antes: ${{ transaction.p_balance }}</li>
+  <li class="list-group-item">Después: ${{ transaction.c_balance }}</li>
+</ul>

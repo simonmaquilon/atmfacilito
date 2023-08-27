@@ -1,0 +1,53 @@
+{% extends "layout.html" %} {% block body %}
+<p>Este proyecto fue desarrollado por:</p>
+
+<div class="container">
+  <section class="mx-auto d-flex gap-3">
+    <div class="col">
+      <div class="card testimonial-card mt-2 mb-3">
+        <div class="card-up aqua-gradient"></div>
+        <div class="avatar mx-auto white">
+          <img
+            src="https://media.licdn.com/dms/image/D4E03AQHG6rdUCE-S5g/profile-displayphoto-shrink_200_200/0/1681274102013?e=1698883200&v=beta&t=PWNBjeHARcK3NUi9a0nDWe-DxNxVyrAcVCyH1qFura0"
+            class="rounded-circle img-fluid"
+            alt="woman avatar"
+          />
+        </div>
+        <div class="card-body text-center">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/simonmaquilon/"
+            class="text-decoration-none card-title font-weight-bold h3"
+            >Simón Maquilón</a
+          >
+          <hr />
+          <p><i class="fas fa-quote-left"></i>Full Stack Developer</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card testimonial-card mt-2 mb-3">
+        <div class="card-up aqua-gradient"></div>
+        <div class="avatar mx-auto white">
+          <img
+            src="https://media.licdn.com/dms/image/C4E03AQFvlkMC4ZgbJw/profile-displayphoto-shrink_800_800/0/1553718419947?e=1698883200&v=beta&t=BdKA7Mn6SOUFBZAXOYI3B1lBRdQbkwhZaumGM2JcURE"
+            class="rounded-circle img-fluid"
+            alt="woman avatar"
+          />
+        </div>
+        <div class="card-body text-center">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/vciampa/"
+            class="text-decoration-none card-title font-weight-bold h3"
+            >Vicente Ciampa</a
+          >
+          <hr />
+          <p><i class="fas fa-quote-left"></i>BigData Consultant</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

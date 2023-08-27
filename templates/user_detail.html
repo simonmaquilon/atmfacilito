@@ -11,8 +11,8 @@ current_user|is_following(user) %}
 </form>
 {% endif %} {% endif %} {% endif %}
 <ul>
-  {% for message in message_list %}
-  <li>{% include "includes/message.html" %}</li>
+  {% for transaction in transactions %}
+  <li>{% include "includes/transaction.html" %}</li>
   {% endfor %}
 </ul>
 {% include "includes/pagination.html" %} {% endblock %}

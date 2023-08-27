@@ -3,25 +3,28 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='atm.css') }}">
 </head>
 <body>
+  <div class="alert alert-info" role="alert">
+    <strong>Bienvenido</strong>: <span class="text-uppercase">{{current_user.username}}</span>
+  </div>
   <div class="container">
     <div class="row">
       <div class="col display">
         <div class="cal-logo text-center">ATM Facilito</div>
         <div class="massege">
           <p id="msg2"></p>
-          <p class="mt-4" id="msg">Ingrese su # de cuenta</p>
+          <p class="mt-4" id="msg">Ingrese su # de PIN</p>
         </div>
         <div class="menu" id="menu">
           <input type="button" value="Retiro" onclick="withdraw()" />
           <input type="button" style="padding-right: 70px" value="Depósito" onclick="credit()" />
-          <input type="button" value="Saldo" onclick="minist()" />
+          <input type="button" value="Saldo" onclick="balance()" />
           <input type="button" value="Salir" onclick="exit()" />
         </div>
         <div id="mini-st">
           <p id="msg3">
-            <span id="Ac-holder"> <b>Usuario:&nbsp;&nbsp;</b>prem prakash gupta</span>
+            <span id="Ac-holder"> <b>Usuario:&nbsp;&nbsp;</b> {{current_user.username}}</span>
             <br />
-            <span id="main-balance">5000</span> <br />
+            <span id="main-balance">{{current_user.account.balance}}</span> <br />
           </p>
         </div>
         <input
@@ -124,7 +127,7 @@
             <input
               type="button"
               value="OK"
-              onclick="cardcheck()"
+              onclick="passcheck()"
               id="btnproced"
               class="btn equal"
             />
@@ -134,31 +137,18 @@
     </div>
   </div>
   <script>
-    var toammount = 5000;
+    let userAccount = '{{current_user.account.get().accnum}}';
+    let accountPin = '{{current_user.account.get().pin}}';
+    let accountBalance = '{{current_user.account.get().balance}}';
+
+    var toammount = accountBalance;
     var tammount = parseInt(toammount);
 
     function back() {
       var exp = document.getElementById('forms').textview.value;
       exp = exp.substring(0, exp.length - 1);
       document.getElementById('forms').textview.value = exp;
-    }
-
-    function cardcheck() {
-      document.getElementById('msg').innerHTML = 'Processing...';
-      var textv = document.getElementById('textview').value;
-      if (textv == '') {
-        document.getElementById('msg').innerHTML = 'Card is no entered';
-      } else {
-        if (textv == 1111) {
-          document.getElementById('msg2').innerHTML = '# de cuenta correcto';
-          document.getElementById('msg').innerHTML = 'Enter your PIN';
-          document.getElementById('textview').value = '';
-          document.getElementById('btnproced').setAttribute('onclick', 'passcheck()');
-        } else {
-          document.getElementById('msg').innerHTML = '# de cuenta incorrecto';
-          document.getElementById('msg').style.color = 'red';
-        }
-      }
+      document.getElementById('msg').style.color = 'white';
     }
 
     function passcheck() {
@@ -166,7 +156,7 @@
       if (textv == '') {
         document.getElementById('msg').innerHTML = 'PIN no ingresado';
       } else {
-        if (textv == 1234) {
+        if (textv == accountPin) {
           document.getElementById('msg2').innerHTML = 'PIN correcto';
           document.getElementById('msg').innerHTML = 'Seleccione';
           document.getElementById('textview').value = '';
@@ -195,16 +185,17 @@
       var textview = document.getElementById('textview').value;
       var textv = parseInt(textview);
       if (textv == '' || textv == 0) {
-        document.getElementById('msg2').innerHTML = 'ammount is not entered';
+        document.getElementById('msg2').innerHTML = 'monto no ingresado';
         document.getElementById('msg').innerHTML = '';
       } else {
         if (tammount > 1 && textv <= tammount) {
           tammount = tammount - textv;
-          document.getElementById('msg2').innerHTML = 'your balance';
+          document.getElementById('msg2').innerHTML = 'Saldo:';
           document.getElementById('msg').innerHTML = tammount;
           document.getElementById('textview').value = '';
         } else {
-          document.getElementById('msg').innerHTML = 'insufficient balance!!!!!!!!';
+          document.getElementById('msg').innerHTML = 'Fondos insuficientes!!!!!!!!';
+          document.getElementById('msg').style.color = 'red';
         }
       }
     }
@@ -226,10 +217,28 @@
         document.getElementById('msg2').innerHTML = 'monto incorrecto';
         document.getElementById('msg').innerHTML = '';
       } else {
-        tammount = tammount + parseFloat(textv);
-        document.getElementById('msg2').innerHTML = 'su saldo';
-        document.getElementById('msg').innerHTML = tammount;
-        document.getElementById('textview').value = '';
+        $.ajax({
+          type: 'POST',
+          url: '/atm-credit',
+          data: JSON.stringify({
+            amount: parseFloat(textv),
+          }),
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function (result) {
+            if (result.completed) {
+              tammount = tammount + parseFloat(textv);
+              document.getElementById('msg2').innerHTML = 'su saldo';
+              document.getElementById('msg').innerHTML = tammount;
+              document.getElementById('textview').value = '';
+
+              Swal.fire({
+                icon: 'success',
+                title: 'Su transaccción se ha completado',
+              });
+            }
+          },
+        });
       }
     }
 
@@ -240,10 +249,11 @@
       document.getElementById('mini-st').style.display = 'none';
       document.getElementById('msg').innerHTML = 'Seleccione';
       document.getElementById('msg2').innerHTML = '';
+      document.getElementById('msg').style.color = 'white';
       document.getElementById('textview').style.display = 'none';
     }
 
-    function minist() {
+    function balance() {
       document.getElementById('textview').value = '';
       document.getElementById('mini-st').style.display = 'block';
       document.getElementById('textview').style.display = 'none';
@@ -255,8 +265,8 @@
     }
 
     function exit() {
-      document.getElementById('msg').innerHTML = 'Ingrese su # de cuenta';
-      document.getElementById('btnproced').setAttribute('onclick', 'cardcheck()');
+      document.getElementById('msg').innerHTML = 'Ingrese su # de PIN';
+      document.getElementById('btnproced').setAttribute('onclick', 'passcheck()');
       document.getElementById('msg2').innerHTML = '';
       document.getElementById('menu').style.display = 'none';
       document.getElementById('textview').value = '';
