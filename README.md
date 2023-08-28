@@ -40,7 +40,7 @@ ATMFacilito (Cajero automático desarrollado en Python)
 
 Formulario básico sin validación para que los participantes puedan crear sus cuentas de prueba.
 
-### ✅ Retirar de dinero vía QR
+### ✅ Retiro de dinero vía QR
 
 Este módulo permite retirar dinero desde un cajero automático mediante un código QR, generado por la aplicación.
 
