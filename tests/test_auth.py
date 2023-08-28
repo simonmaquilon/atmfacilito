@@ -1,14 +1,19 @@
-import pytest
+from app import app
+import json
 
 
 class TestLogin:
-    def test_user_join(self):
-        pass
+    def app_status(self):
+        response = app.test_client().get("/")
 
-    def test_user_login(self):
-        pass
+        assert response.status_code == 200
 
+    def test_user_login(client):
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        formdata = {"username": "test", "password": "abc123"}
 
-class TestLogout:
-    def test_user_login(self):
-        pass
+        response = app.test_client().post(
+            "http://127.0.0.1:3000/login/", data=formdata, headers=headers
+        )
+
+        assert response.status_code == 200

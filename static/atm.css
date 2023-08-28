@@ -36,7 +36,8 @@ input {
   text-shadow: 1px 1px 1px black;
   margin: 10px;
 }
-#textview {
+#textview,
+#textview-select {
   width: 150px;
   height: 30px;
   display: block;
@@ -60,7 +61,7 @@ input {
   margin: 5px;
 }
 .equal {
-  width: 70px;
+  width: 90px;
 }
 .massege {
   position: absolute;

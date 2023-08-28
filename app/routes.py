@@ -6,6 +6,25 @@ from sqlite3 import IntegrityError
 from flask import abort, flash, g, redirect, render_template, request, session, url_for
 from app import app, database
 from app.models import Account, Customer, Transaction
+import time
+from queue import Empty, Queue
+from threading import Thread
+
+# Cola para procesar transacciones
+queue = Queue()
+queue.join()
+
+
+class IterableQueue:
+    def __init__(self, source_queue):
+        self.source_queue = source_queue
+
+    def __iter__(self):
+        while True:
+            try:
+                yield self.source_queue.get_nowait()
+            except Empty:
+                return
 
 
 # ready
@@ -140,7 +159,9 @@ def account():
 
     try:
         account = user.account.get()
-        return render_template("account.html", account=account)
+        return render_template(
+            "account.html", account=account, transactions=user.transactions.count()
+        )
     except:
         return redirect(url_for("homepage"))
 
@@ -185,8 +206,63 @@ def withdraw():
     return render_template("create.html", account=user.account.first().accnum)
 
 
-@app.route("/atm-transact/", methods=["GET", "POST"])
-def atm_transaction():
+@app.route("/atm-withdraw/t=<transaction_id>", methods=["GET", "POST"])
+def atm_withdraw(transaction_id):
+    user = get_current_user()
+    if request.method == "GET" and transaction_id == "ajax":
+        transactions = (
+            Transaction.select(
+                Transaction.id,
+                Transaction.ttype,
+                Transaction.amount,
+                Transaction.completed,
+            )
+            .where((Transaction.ttype == "RETIRO") & (Transaction.completed == False))
+            .dicts()
+        )
+
+        return {"transactions": list(transactions)}
+
+    if request.method == "POST" and transaction_id == "ajax":
+        data = request.get_json()
+        current_balance = user.account.get().balance
+        completed = 0
+        transactions = Transaction.select(Transaction.id, Transaction.amount).where(
+            Transaction.id << data["transactions"]
+        )
+
+        for transaction_id in transactions:
+            time.sleep(1)
+            queue.put(transaction_id)
+
+        for transaction in IterableQueue(queue):
+            print(f"Procesando transacción ({transaction})")
+            if transaction.amount <= current_balance:
+                current_balance = user.account.get().balance - transaction.amount
+                transaction = Transaction.update(
+                    c_balance=current_balance,
+                    completed=True,
+                ).where(Transaction.id == transaction)
+
+                query = Account.update(balance=current_balance).where(
+                    Account.customer_id == user.id
+                )
+                query.execute()
+                transaction.execute()
+                completed = 1
+
+            time.sleep(2)
+            queue.task_done()
+
+        results = {"completed": completed, "balance": current_balance}
+
+        return results
+
+    return redirect(url_for("atm"))
+
+
+@app.route("/atm-credit", methods=["POST"])
+def atm_credit():
     user = get_current_user()
     if request.method == "POST":
         data = request.get_json()
@@ -205,73 +281,6 @@ def atm_transaction():
         )
         query.execute()
 
-    results = {"completed": 1}
+        results = {"completed": 1}
 
     return results
-
-
-# Vicente
-
-# Aquí va la implementación de Threads
-# ####### import multiprocessing # #######
-
-# @app.route("/makewithdraw/<transaction_id>/")
-# def make_withdraw(transaction_id):
-#     transaction = (
-#         Transaction.select()
-#         .where(Transaction.id == transaction_id)
-#         .order_by(Transaction.customer)
-#     )
-#     from_account = transaction.get().from_account
-
-#     queue = multiprocessing.Queue()
-
-#     def process_transaction(transaction_id):
-#         queue.put(transaction_id)
-
-#     processes = []
-#     for i in range(5):
-#         process = multiprocessing.Process(target=process_transaction, args=(transaction_id,))
-#         processes.append(process)
-#         process.start()
-
-#     for process in processes:
-#         process.join()
-
-#     while not queue.empty():
-#         transaction_id = queue.get()
-#         print(transaction_id)
-
-#     return render_template("atm.html")
-### ===========import threading # ####### =================================
-#  import threading
-
-# @app.route("/makewithdraw/<transaction_id>/")
-# def make_withdraw(transaction_id):
-#     transaction = (
-#         Transaction.select()
-#         .where(Transaction.id == transaction_id)
-#         .order_by(Transaction.customer)
-#     )
-#     from_account = transaction.get().from_account
-
-#     queue = []
-
-#     def thread_transaction(transaction_id):
-#         queue.append(transaction_id)
-
-#     threads = []
-#     for i in range(5):
-#         thread = threading.Thread(target=thread_transaction, args=(transaction_id,))
-#         threads.append(thread)
-#         thread.start()
-
-#     for thread in threads:
-#         thread.join()
-
-#     for transaction_id in queue:
-#         print(transaction_id)
-
-#     return render_template("atm.html")
-
-###====== ===========End threading # ####### =================================

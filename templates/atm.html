@@ -23,7 +23,8 @@
               <b>Usuario:&nbsp;&nbsp;</b> {{current_user.username}}</span
             >
             <br />
-            <span id="main-balance" class="h4">{{current_user.account.balance}}</span> <br />
+            <span id="main-balance" class="h4">{{current_user.account.balance}}</span>
+            <br />
           </p>
         </div>
         <input
@@ -37,6 +38,11 @@
       <div class="col calculator">
         <form class="cal-body" name="forms" id="forms">
           <input type="text" class="cal-display" name="answer" id="textview" disabled />
+          <select
+            class="form-select"
+            style="font-size: 13px; color: white; border: 2px solid white"
+            id="textview-select"
+          ></select>
           <div class="cal-button">
             <input
               type="button"
@@ -139,17 +145,22 @@
     let accountPin = '{{current_user.account.get().pin}}';
     let accountBalance = '{{current_user.account.get().balance}}';
 
-    var toammount = accountBalance;
-    var tammount = parseInt(toammount);
+    const queryString = window.location.search;
+
+    let toammount = accountBalance;
+    let tammount = parseInt(toammount);
 
     function back() {
+      document.getElementById('btnproced').value = 'OK';
       var exp = document.getElementById('forms').textview.value;
       exp = exp.substring(0, exp.length - 1);
       document.getElementById('forms').textview.value = exp;
       document.getElementById('msg').style.color = 'white';
+      document.getElementById('textview-select').style.display = 'none';
     }
 
     function passcheck() {
+      document.getElementById('btnproced').value = 'OK';
       var textv = document.getElementById('textview').value;
       if (textv == '') {
         document.getElementById('msg').innerHTML = 'PIN no ingresado';
@@ -167,38 +178,78 @@
           document.getElementById('msg').style.color = 'red';
         }
       }
+      document.getElementById('textview-select').style.display = 'none';
     }
 
     function withdraw() {
-      document.getElementById('textview').value = '';
-      document.getElementById('msg2').innerHTML = '';
-      document.getElementById('msg').innerHTML = 'Ingrese el monto';
-      document.getElementById('menu').style.display = 'none';
-      document.getElementById('menuback').style.display = 'block';
-      document.getElementById('btnproced').setAttribute('onclick', 'calculation1()');
-      document.getElementById('textview').style.display = 'block';
+      $.ajax({
+        type: 'GET',
+        url: '/atm-withdraw/t=ajax',
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (data) {
+          transactions = data?.transactions;
+          $('#textview-select').empty();
+
+          data?.transactions?.forEach(t => {
+            $('#textview-select').append(
+              $('<option>', {
+                value: t.id,
+                text: `${t.ttype} | (${t.amount})`,
+              })
+            );
+          });
+
+          document.getElementById('textview').value = '';
+          document.getElementById('textview').style.display = 'none';
+
+          if (transactions?.length > 0) {
+            document.getElementById('textview-select').style.display = 'block';
+          } else {
+            document.getElementById('textview-select').style.display = 'none';
+            document.getElementById('textview').value = '0 pendientes';
+            document.getElementById('textview').style.color = 'red';
+            document.getElementById('textview').style.display = 'block';
+          }
+          document.getElementById('msg2').innerHTML = '';
+          document.getElementById('msg').innerHTML = 'Transacciones';
+          document.getElementById('menu').style.display = 'none';
+          document.getElementById('menuback').style.display = 'block';
+          document.getElementById('btnproced').value = 'Procesar';
+          document.getElementById('btnproced').setAttribute('onclick', 'calculation1()');
+        },
+      });
     }
 
     function calculation1() {
-      var textview = document.getElementById('textview').value;
-      var textv = parseInt(textview);
-      if (textv == '' || textv == 0) {
-        document.getElementById('msg2').innerHTML = 'monto no ingresado';
-        document.getElementById('msg').innerHTML = '';
-      } else {
-        if (tammount > 1 && textv <= tammount) {
-          tammount = tammount - textv;
-          document.getElementById('msg2').innerHTML = 'Saldo:';
-          document.getElementById('msg').innerHTML = tammount;
-          document.getElementById('textview').value = '';
-        } else {
-          document.getElementById('msg').innerHTML = 'Fondos insuficientes!!!';
-          document.getElementById('msg').style.color = 'red';
-        }
-      }
+      const selectOptions = $('#textview-select option');
+      const transactions = $.map(selectOptions, option => option.value);
+
+      $.ajax({
+        type: 'POST',
+        url: '/atm-withdraw/t=ajax',
+        data: JSON.stringify({ transactions }),
+        contentType: 'application/json',
+        dataType: 'json',
+        beforeSend: () => (document.getElementById('msg').innerHTML = 'Procesando...'),
+        success: function (result) {
+          if (result.completed) {
+            $('#textview-select').empty();
+            document.getElementById('textview-select').style.display = 'none';
+            document.getElementById('msg2').innerHTML = 'Saldo:';
+            document.getElementById('msg').innerHTML = '$' + result.balance;
+            document.getElementById('textview').value = '';
+          } else {
+            document.getElementById('msg').innerHTML = 'Fondos insuficientes!!!';
+            document.getElementById('msg').style.color = 'red';
+          }
+        },
+      });
     }
 
     function credit() {
+      document.getElementById('btnproced').value = 'OK';
+      document.getElementById('textview-select').style.display = 'none';
       document.getElementById('textview').value = '';
       document.getElementById('msg2').innerHTML = '';
       document.getElementById('msg').innerHTML = 'Ingrese el monto';
@@ -227,7 +278,7 @@
             if (result.completed) {
               tammount = tammount + parseFloat(textv);
               document.getElementById('msg2').innerHTML = 'Saldo';
-              document.getElementById('msg').innerHTML = tammount;
+              document.getElementById('msg').innerHTML = '$' + tammount;
               document.getElementById('textview').value = '';
               document.getElementById('textview').style.display = 'none';
             }
@@ -237,6 +288,8 @@
     }
 
     function menuback() {
+      document.getElementById('btnproced').value = 'OK';
+      document.getElementById('textview-select').style.display = 'none';
       document.getElementById('menu').style.display = 'block';
       document.getElementById('menuback').style.display = 'none';
       document.getElementById('btnproced').setAttribute('onclick', '');
@@ -248,17 +301,21 @@
     }
 
     function balance() {
+      document.getElementById('btnproced').value = 'OK';
+      document.getElementById('textview-select').style.display = 'none';
       document.getElementById('textview').value = '';
       document.getElementById('balanceview').style.display = 'block';
       document.getElementById('textview').style.display = 'none';
       document.getElementById('msg').innerHTML = 'Saldo:';
       document.getElementById('msg2').innerHTML = '';
-      document.getElementById('main-balance').innerHTML = tammount;
+      document.getElementById('main-balance').innerHTML = '$' + tammount;
       document.getElementById('menuback').style.display = 'block';
       document.getElementById('menu').style.display = 'none';
     }
 
     function exit() {
+      document.getElementById('btnproced').value = 'OK';
+      document.getElementById('textview-select').style.display = 'none';
       document.getElementById('msg').innerHTML = 'Ingrese su # de PIN';
       document.getElementById('btnproced').setAttribute('onclick', 'passcheck()');
       document.getElementById('msg2').innerHTML = '';
